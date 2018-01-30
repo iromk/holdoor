@@ -1,8 +1,6 @@
 package holdoor.srv;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Logger;
@@ -53,9 +51,11 @@ public class Server {
                     }
                 }
                 LOG.info("Waiting for incoming file");
-                for(loop = true; loop;) {
-
-                }
+//                for(loop = true; loop;) {
+                    Long size = new Long(in.readUTF());
+                    LOG.info("Incoming file size " + size);
+                    receiveBinary(size);
+//                }
 
             } catch (IOException e) {
                 LOG.warning("Incoming session couldn't be connected (" + e.toString() + ")");
@@ -70,6 +70,36 @@ public class Server {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void receiveBinary(Long expectedSize) {
+        File tempFile = new File("./data/tmp/file.pdf");
+        try {
+            BufferedOutputStream outTemp = new BufferedOutputStream(new FileOutputStream(tempFile));
+            BufferedInputStream inputStream = new BufferedInputStream(clientSocket.getInputStream());
+
+            final int blockSize = 10240;
+            byte[] buffer = new byte[blockSize];
+            long totalReceived = 0;
+
+            int length;
+            for (length = inputStream.read(buffer); length >= 0; length = inputStream.read(buffer)) {
+                outTemp.write(buffer, 0, length);
+                LOG.info("Block of size received " + length);
+                totalReceived += length;
+            }
+            LOG.info("last length " + length);
+            LOG.info("Received " + totalReceived);
+            outTemp.close();
+
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     private void openSocket(int port) throws IOException {

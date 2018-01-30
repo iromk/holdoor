@@ -28,7 +28,8 @@ public class UserSession extends Session {
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
             out.writeUTF(Server.HELLO_TOKEN);
-            while(in.readUTF().equals(Server.OK_TOKEN)) { }
+            if(!in.readUTF().equals(Server.OK_TOKEN))
+                throw new RuntimeException("Unexpected response from server");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -36,13 +37,32 @@ public class UserSession extends Session {
 
     }
 
-    public void send(String file) {
+    public void send(String filename) {
 
         try {
+
+            File file = new File(filename);
 
             BufferedInputStream localInput = new BufferedInputStream(new FileInputStream(file));
             BufferedOutputStream remoteOutput = new BufferedOutputStream(out);
 
+            try {
+                out.writeUTF(Long.toString(file.length()));
+
+                final int blockSize = 10240;
+                byte[] buffer = new byte[blockSize];
+                long totalSent = 0;
+
+                for (int length = localInput.read(buffer); length >= 0; length = localInput.read(buffer)) {
+                    remoteOutput.write(buffer, 0, length);
+                    totalSent += length;
+                }
+                System.out.println("Sent totally " + totalSent);
+                remoteOutput.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();

@@ -6,7 +6,7 @@ public class Main {
         UserSession userSession = new UserSession();
 
         userSession.establish();
-        userSession.send("doc");
+        userSession.send("./data/sample/Starter Set - Characters.pdf");
     }
 
 }
