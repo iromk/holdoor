@@ -5,7 +5,7 @@ import java.util.logging.*;
 
 public class ServerLogger {
 
-    private static final String DEFAULT_LOG_FILE = "./holdoor_server.log";
+    private static final String DEFAULT_LOG_FILE = "./data/log/holdoor_server.log";
 
     private static Logger logger = null;
 
