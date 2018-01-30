@@ -20,22 +20,23 @@ public class ServerLogger {
 
         try { // to create and attach console and file handlers
 
+            /*
+            // Setup here console handler if no default for some reason
             consoleHandler = new ConsoleHandler();
+            logger.addHandler(consoleHandler);
+            consoleHandler.setLevel(Level.ALL);
+            */
 
             fileHandler  = new FileHandler(DEFAULT_LOG_FILE, true);
             fileHandler.setFormatter(new SimpleFormatter()); // plain text is enough for now
-
-            logger.addHandler(consoleHandler);
             logger.addHandler(fileHandler);
-
-            consoleHandler.setLevel(Level.ALL);
             fileHandler.setLevel(Level.ALL);
 
             logger.setLevel(Level.ALL);
 
-        } catch(IOException exception){
+        } catch(IOException e){
             // treat problem with logging to a file as not fatal, but report
-            logger.log(Level.WARNING, "FileHandler cannot be initialized. Logging to console only.", exception);
+            logger.log(Level.WARNING, "FileHandler cannot be initialized. Logging to console only.", e);
         }
 
         return logger;
