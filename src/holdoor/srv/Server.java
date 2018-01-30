@@ -87,7 +87,9 @@ public class Server {
                 outTemp.write(buffer, 0, length);
                 LOG.info("Block of size received " + length);
                 totalReceived += length;
+                if (totalReceived > expectedSize) throw new RuntimeException("Sent file is bigger than were announced");
             }
+            if (totalReceived < expectedSize) throw new RuntimeException("Sent file is smaller than were announced");
             LOG.info("last length " + length);
             LOG.info("Received " + totalReceived);
             outTemp.close();
@@ -97,6 +99,8 @@ public class Server {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (RuntimeException e) {
+            LOG.severe("Bad client or intruder detected. (" + e.getMessage() + ")");
         }
 
 
