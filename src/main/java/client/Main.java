@@ -1,4 +1,4 @@
-package holdoor.client;
+package client;
 
 public class Main {
 

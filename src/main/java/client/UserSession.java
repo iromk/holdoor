@@ -1,7 +1,7 @@
-package holdoor.client;
+package client;
 
-import holdoor.common.Session;
-import holdoor.srv.Server;
+import common.Session;
+import srv.Server;
 
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -47,7 +47,7 @@ public class UserSession extends Session {
             BufferedOutputStream remoteOutput = new BufferedOutputStream(out);
 
             try {
-                out.writeUTF(Long.toString(file.length()+10));
+                out.writeUTF(Long.toString(file.length()));
 
                 final int blockSize = 10240;
                 byte[] buffer = new byte[blockSize];

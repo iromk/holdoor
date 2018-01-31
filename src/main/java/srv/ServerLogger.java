@@ -1,4 +1,4 @@
-package holdoor.srv;
+package srv;
 
 import java.io.IOException;
 import java.util.logging.*;

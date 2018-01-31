@@ -1,4 +1,4 @@
-package holdoor.common;
+package common;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

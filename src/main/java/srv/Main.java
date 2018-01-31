@@ -1,4 +1,4 @@
-package holdoor.srv;
+package srv;
 
 public class Main {
 

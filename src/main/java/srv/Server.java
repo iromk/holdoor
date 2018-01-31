@@ -1,4 +1,4 @@
-package holdoor.srv;
+package srv;
 
 import java.io.*;
 import java.net.ServerSocket;
