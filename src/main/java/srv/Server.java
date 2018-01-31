@@ -1,5 +1,7 @@
 package srv;
 
+import common.Protocol;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -12,6 +14,8 @@ public class Server {
     public static final String OK_TOKEN = "OK";
 
     private final Logger LOG = ServerLogger.setup();
+
+    private Thread holdoorThread;
 
     private int port;
     private ServerSocket serverSocket;
@@ -82,6 +86,8 @@ public class Server {
     }
 
     public void run() {
+
+        holdoorThread =
         new Thread(() -> {
             try {
 
@@ -97,8 +103,8 @@ public class Server {
                 boolean loop = true;
                 while (loop) {
                     String text = in.readUTF();
-                    if (text.equals(HELLO_TOKEN)) {
-                        out.writeUTF(OK_TOKEN);
+                    if (text.startsWith(Protocol.HELLO_TOKEN)) {
+                        out.writeUTF(Protocol.OK_TOKEN);
                         LOG.info("Session authorized");
                         loop = false;
                     }
@@ -116,7 +122,8 @@ public class Server {
                 LOG.severe("Server start failed");
             } catch (IOException e) {
                 LOG.warning("Incoming session couldn't be connected (" + e.toString() + ")");
-            } finally {
+            }
+            finally {
                 try {
                     serverSocket.close();
                 } catch (IOException e) {
@@ -124,7 +131,17 @@ public class Server {
                 }
             }
 
+        });
+        holdoorThread.start();
+    }
 
-        }).start();
+    public void stop() {
+        holdoorThread.interrupt();
+        try {
+            serverSocket.close();
+            LOG.info("Server stopped");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
