@@ -47,7 +47,7 @@ public class UserSession extends Session {
             BufferedOutputStream remoteOutput = new BufferedOutputStream(out);
 
             try {
-                out.writeUTF(Long.toString(file.length()));
+                out.writeUTF(Long.toString(file.length()+10));
 
                 final int blockSize = 10240;
                 byte[] buffer = new byte[blockSize];

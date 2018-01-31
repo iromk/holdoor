@@ -50,6 +50,8 @@ public class Server {
                         loop = false;
                     }
                 }
+
+
                 LOG.info("Waiting for incoming file");
 //                for(loop = true; loop;) {
                     Long size = new Long(in.readUTF());
