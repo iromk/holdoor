@@ -1,5 +1,6 @@
 package srv;
 
+import common.Environment;
 import common.FileManager;
 import common.Protocol;
 
@@ -11,6 +12,7 @@ import java.util.logging.Logger;
 public class Server {
 
     private final Logger LOG = ServerLogger.setup();
+    private final Environment environment =  Environment.getInstance();
 
     private Thread holdoorThread;
 
@@ -28,13 +30,15 @@ public class Server {
 
     public Server(int port) {
 
+        environment.setLogger(LOG);
+
         serverSocket = null;
         clientSocket = null;
         this.port = port;
 
     }
 
-      private void openSocket(int port) throws SocketNotOpenedException {
+    private void openSocket(int port) throws SocketNotOpenedException {
 
         try {
             serverSocket = new ServerSocket(port);
