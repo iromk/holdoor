@@ -8,9 +8,8 @@ import java.util.logging.Logger;
 
 public class FileManager {
 
-    private static final Logger LOG = Logger.getLogger(Server.class.getName());
-
     public static void receiveBinary(Long expectedSize, InputStream socketInputStream) {
+        final Logger LOG = Environment.getInstance().getLogger();
         File tempFile = new File("./data/tmp/file.pdf");
         try {
             BufferedOutputStream outTemp = new BufferedOutputStream(new FileOutputStream(tempFile));
