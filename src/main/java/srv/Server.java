@@ -31,13 +31,9 @@ public class Server {
 
     public Server(int port) {
 
-        LOG.info("Holdoor server is starting...");
-
         serverSocket = null;
         clientSocket = null;
         this.port = port;
-
-//        run();
 
     }
 
@@ -87,8 +83,9 @@ public class Server {
 
     public void run() {
 
-        holdoorThread =
-        new Thread(() -> {
+        LOG.info("Holdoor server is starting...");
+
+        holdoorThread = new Thread(() -> {
             try {
 
                 openSocket(port);
