@@ -1,5 +1,6 @@
 package client;
 
+import common.Protocol;
 import common.Session;
 import srv.Server;
 
@@ -27,8 +28,8 @@ public class UserSession extends Session {
             socket.connect(socketAddress);
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
-            out.writeUTF(Server.HELLO_TOKEN);
-            if(!in.readUTF().equals(Server.OK_TOKEN))
+            out.writeUTF(Protocol.HELLO_TOKEN);
+            if(!in.readUTF().equals(Protocol.OK_TOKEN))
                 throw new RuntimeException("Unexpected response from server");
 
         } catch (IOException e) {

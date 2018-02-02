@@ -1,5 +1,6 @@
 package srv;
 
+import common.FileManager;
 import common.Protocol;
 
 import java.io.*;
@@ -8,10 +9,6 @@ import java.net.Socket;
 import java.util.logging.Logger;
 
 public class Server {
-
-    private static final int LISTENING_PORT = 0x1D00;
-    public static final String HELLO_TOKEN = "HOLDTHEDOOR";
-    public static final String OK_TOKEN = "OK";
 
     private final Logger LOG = ServerLogger.setup();
 
@@ -25,7 +22,7 @@ public class Server {
 
     public Server() {
 
-        this(LISTENING_PORT);
+        this(Protocol.DEFAULT_PORT);
 
     }
 
@@ -37,41 +34,7 @@ public class Server {
 
     }
 
-    private void receiveBinary(Long expectedSize) {
-        File tempFile = new File("./data/tmp/file.pdf");
-        try {
-            BufferedOutputStream outTemp = new BufferedOutputStream(new FileOutputStream(tempFile));
-            BufferedInputStream inputStream = new BufferedInputStream(clientSocket.getInputStream());
-
-            final int blockSize = 10240;
-            byte[] buffer = new byte[blockSize];
-            long totalReceived = 0;
-
-            int length;
-            for (length = inputStream.read(buffer); length >= 0; length = inputStream.read(buffer)) {
-                outTemp.write(buffer, 0, length);
-                LOG.info("Block of size received " + length);
-                totalReceived += length;
-                if (totalReceived > expectedSize) throw new RuntimeException("Sent file is bigger than were announced");
-            }
-            if (totalReceived < expectedSize) throw new RuntimeException("Sent file is smaller than were announced");
-            LOG.info("last length " + length);
-            LOG.info("Received " + totalReceived);
-            outTemp.close();
-
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (RuntimeException e) {
-            LOG.severe("Bad client or intruder detected. (" + e.getMessage() + ")");
-        }
-
-
-    }
-
-    private void openSocket(int port) throws SocketNotOpenedException {
+      private void openSocket(int port) throws SocketNotOpenedException {
 
         try {
             serverSocket = new ServerSocket(port);
@@ -112,7 +75,7 @@ public class Server {
 //                for(loop = true; loop;) {
                 Long size = new Long(in.readUTF());
                 LOG.info("Incoming file size " + size);
-                receiveBinary(size);
+                FileManager.receiveBinary(size, clientSocket.getInputStream());
 //                }
 
             } catch (SocketNotOpenedException e) {
