@@ -20,7 +20,7 @@ public class StartTest {
     @Before
     public void RunServer() {
         server = new Server();
-        server.run();
+        server.start();
     }
 
     @Test

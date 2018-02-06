@@ -21,7 +21,7 @@ public class AuthenticationTest {
     @Before
     public void RunServer() {
         server = new Server(SERVER_PORT);
-        server.run();
+        server.start();
         try {
             socket = new Socket(SERVER_HOST, SERVER_PORT);
         } catch (IOException e) {

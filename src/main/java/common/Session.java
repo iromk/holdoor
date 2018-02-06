@@ -1,13 +1,8 @@
 package common;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.Socket;
+public abstract class Session extends Thread {
 
-public abstract class Session {
-
-    public static final long TIMEOUT = 120 * 1000;
+    public static final long TIMEOUT = 120_000;
 
 
 }
