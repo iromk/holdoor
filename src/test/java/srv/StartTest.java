@@ -1,11 +1,10 @@
-package server;
+package srv;
 
 import common.Protocol;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import srv.Server;
 
 import java.io.IOException;
 import java.net.Socket;
