@@ -45,26 +45,23 @@ public class UserTest {
         User user = new User();
         user.setName(new Name(userFirstName, userLastName));
 
+        User user2 = new User();
+        user2.setName(new Name(userLastName, userFirstName));
+
         entityManager.getTransaction().begin();
         entityManager.persist(user);
+        entityManager.persist(user2);
         entityManager.getTransaction().commit();
 
         entityManager.detach(user);
-
-//        user = null;
-
+        entityManager.detach(user2);
 
         User foundUser = entityManager.find(User.class, 1);
-
         Assert.assertTrue(foundUser.equals(user));
 
-//        user = new User();
-//        user.setId(1);
-//        user.setName(new Name(userFirstName, "wrongLastName"));
-//        Assert.assertFalse(entityManager.contains(user));
-//
-//        user.setName(new Name(userFirstName, userLastName));
-//        Assert.assertTrue(entityManager.contains(user));
+        foundUser = entityManager.find(User.class, 2);
+        Assert.assertTrue(foundUser.equals(user2));
+
     }
 
 }
