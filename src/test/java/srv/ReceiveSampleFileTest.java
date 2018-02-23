@@ -31,7 +31,7 @@ public class ReceiveSampleFileTest {
         if(rcvdFile.exists()) rcvdFile.delete();
 
         // simulate client behavior
-        UserSession userSession = new UserSession();
+        UserSession userSession = UserSession.get();
         userSession.establish();
         userSession.send(sentFileName);
 

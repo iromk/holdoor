@@ -1,5 +1,6 @@
 package client;
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import common.Protocol;
 import common.Session;
 import srv.Server;
@@ -15,13 +16,32 @@ public class UserSession extends Session {
     public DataOutputStream out;
     public DataInputStream in;
 
+    private static UserSession thisSession;
 
-    public void authenticate() {}
+    public static UserSession get() {
+        if(thisSession == null) {
+            thisSession = new UserSession();
+        }
+        return thisSession;
+    }
+
+    private UserSession() {
+    }
+
+    public void authenticate(String username, String password) throws IOException {
+
+        if(socket == null || !socket.isConnected()) {
+            establish();
+
+            throw new IOException("Socket ");
+        }
+
+    }
 
 
     public void establish() {
         socket = new Socket();
-        SocketAddress socketAddress = new InetSocketAddress("localhost", 0x1D00);
+        SocketAddress socketAddress = new InetSocketAddress("localhost", Protocol.DEFAULT_PORT);
 
 
         try {

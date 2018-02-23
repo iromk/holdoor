@@ -35,6 +35,11 @@ public class MyHoldoorClient extends Application {
 
     }
 
+    private void connectToServer() {
+        userSession = UserSession.get();
+        userSession.establish();
+    }
+
     public static void main(String[] args) {
         launch(args);
     }
