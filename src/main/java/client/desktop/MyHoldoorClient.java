@@ -1,5 +1,6 @@
 package client.desktop;
 
+import client.UserSession;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,10 +11,21 @@ import java.net.URL;
 
 public class MyHoldoorClient extends Application {
 
+    private UserSession userSession;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        String sceneFile = "myholdoor.fxml";
+        connectToServer();
+
+        showLoginWindow(primaryStage);
+
+    }
+
+
+    private void showLoginWindow(Stage primaryStage) throws Exception {
+
+        String sceneFile = "ClientLoginWindow.fxml";
         // it didn't want to load fxml until I added <resources> into pom.xml
 
         Parent root = null;
