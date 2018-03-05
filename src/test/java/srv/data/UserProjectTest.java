@@ -6,19 +6,20 @@ import org.junit.Before;
 import org.junit.Test;
 import srv.JPAKeeper;
 
+import javax.jws.soap.SOAPBinding;
 import javax.persistence.*;
 
 public class UserProjectTest {
 
-    private EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager;
 
     @Before
     public void prepareManagerFactory() {
-//        entityManagerFactory = Persistence.createEntityManagerFactory("test.holdoorsrv.jpa");
         entityManager = JPAKeeper.getEntityManager();
 
         clearTables("User", "Project");
+
+        loadKnownData();
     }
 
     private void clearTables(String... tableNames) {
@@ -32,30 +33,43 @@ public class UserProjectTest {
         entityManager.getTransaction().commit();
     }
 
+    private void loadKnownData() {
+
+        entityManager.getTransaction().begin();
+
+        User nextUser;
+        nextUser = new User("Jane", "Doe", "jd1989");
+        entityManager.persist(nextUser);
+        nextUser = new User("Mac", "Os", "applejuice");
+        entityManager.persist(nextUser);
+        nextUser = new User("Keep", "Simple", "stupid");
+        entityManager.persist(nextUser);
+        nextUser.getName().setFirst("Keep It");
+        entityManager.persist(nextUser);
+        nextUser = new User("Sarah", "Connor", "weallbedead");
+        entityManager.persist(nextUser);
+        nextUser = new User("Yankee", "Go", "dunno");
+        entityManager.persist(nextUser);
+        nextUser = new User("World", "Peace", "nya");
+        entityManager.persist(nextUser);
+
+        entityManager.getTransaction().commit();
+    }
+
     @After
     public void closeEverything() {
-        JPAKeeper.close();
-//        entityManagerFactory.close();
+        JPAKeeper.closeEntityManager();
     }
 
     @Test
-    public void AddUserAndProjectsTest() {
+    public void AddUserAnd2ProjectsTest() {
 
-        final String userFirstName = "Sarah";
-        final String userLastName = "Connor";
-        final String user1Uid = userFirstName + userLastName + Math.random();
-        final String user2Uid = userFirstName + userLastName + Math.random();
+        final String userFirstName = "Conan";
+        final String userLastName = "Barber";
+        final String userUid = "headcut";
 
         final String project1Name = "Project #1";
         final String project2Name = "Another project";
-
-        User user = new User();
-        user.setName(new Name(userFirstName, userLastName));
-        user.setUid(user1Uid);
-
-        User user2 = new User();
-        user2.setName(new Name(userLastName, userFirstName));
-        user2.setUid(user2Uid);
 
         Project p1 = new Project();
         p1.setName(project1Name);
@@ -63,39 +77,33 @@ public class UserProjectTest {
         Project p2 = new Project();
         p2.setName(project2Name);
 
-        p1.setHolderUid(user);
-        p2.setHolderUid(user);
+        User conan = new User(userFirstName, userLastName, userUid);
+
+        p1.setHolderUid(conan);
+        p2.setHolderUid(conan);
 
         entityManager.getTransaction().begin();
-        entityManager.persist(user);
-        entityManager.persist(user2);
+        entityManager.persist(conan);
         entityManager.persist(p1);
         entityManager.persist(p2);
         entityManager.getTransaction().commit();
 
-        entityManager.detach(user);
-        entityManager.detach(user2);
         entityManager.detach(p1);
         entityManager.detach(p2);
+        entityManager.detach(conan);
 
-//        User foundUser = entityManager.find(User.class, user1Uid);
-//        foundUser =
+        User check = User.findByUid(userUid);
 
-        Project p3 = new Project();
-        p3.setName("asd");
+        Assert.assertEquals(check.getName().getFirst(), userFirstName);
+        Assert.assertEquals(check.getProjects().size(), 2);
+        Assert.assertEquals(check.getProjects().toArray()[0], p1);
+        Assert.assertEquals(check.getProjects().toArray()[1], p2);
+    }
 
-        User userResult = User.findByUid(user1Uid);
-
-        Assert.assertEquals(userResult.getName().getFirst(), userFirstName);
-        Assert.assertEquals(userResult.getProjects().size(), 2);
-        Assert.assertEquals(userResult.getProjects().toArray()[0], p1);
-        Assert.assertEquals(userResult.getProjects().toArray()[1], p2);
-
-//        Assert.assertTrue(foundUser.equals(user));
-//
-//        foundUser = entityManager.find(User.class, user2Uid);
-//        Assert.assertTrue(foundUser.equals(user2));
-
+    @Test
+    public void FindUserAndAdd3Projects() {
+        User hey = User.findByUid("logmi");
+        Assert.assertNull (hey);
     }
 
 }

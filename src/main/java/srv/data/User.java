@@ -31,6 +31,12 @@ public class User implements Serializable {
         this.id = id;
     }
 
+    public User() {}
+
+    public User(String firstName, String lastName, String uid) {
+        setName(new Name(firstName, lastName));
+        setUid(uid);
+    }
 
 
     @Column(unique = true, name = "uid")
@@ -79,7 +85,7 @@ public class User implements Serializable {
         try {
             returnValue = typedQuery.getSingleResult();
         } catch (NoResultException e) {
-            Environment.getInstance().getLogger().severe("Entity not found by uid \"" + uid + "\"");
+//            Environment.getInstance().getLogger().severe("Entity not found by given uid \"" + uid + "\"");
         }
 
         return returnValue;

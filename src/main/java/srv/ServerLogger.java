@@ -9,6 +9,10 @@ public class ServerLogger {
 
     private static Logger logger = null;
 
+    static {
+        setup();
+    }
+
     public static Logger setup() {
 
         if(logger != null) return logger;
