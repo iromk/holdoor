@@ -40,10 +40,10 @@ public class ClientLoginController implements Initializable {
 
             updateNotification(e.getMessage());
         }
-        showMainWindow(stageOfEvent(event));
+        showMainWindow(getStageOfEvent(event));
     }
 
-    private Stage stageOfEvent(ActionEvent event) {
+    private Stage getStageOfEvent(ActionEvent event) {
         return (Stage) ((Node) event.getSource()).getScene().getWindow();
     }
 
