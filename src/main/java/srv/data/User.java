@@ -1,8 +1,13 @@
 package srv.data;
 
+import common.Environment;
 import org.hibernate.annotations.GenericGenerator;
+import srv.JPAKeeper;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.io.Serializable;
 import java.util.*;
 
@@ -58,6 +63,26 @@ public class User implements Serializable {
 
     public void setName(Name name) {
         this.name = name;
+    }
+
+    public static User findByUid(String uid) {
+        User returnValue = null;
+
+        EntityManager entityManager = JPAKeeper.getEntityManager();
+
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery =  criteriaBuilder.createQuery(User.class);
+        Root<User> from = criteriaQuery.from(User.class);
+        criteriaQuery.select(from);
+        criteriaQuery.where(criteriaBuilder.equal(from.get("uid"), uid));
+        TypedQuery<User> typedQuery = entityManager.createQuery(criteriaQuery);
+        try {
+            returnValue = typedQuery.getSingleResult();
+        } catch (NoResultException e) {
+            Environment.getInstance().getLogger().severe("Entity not found by uid \"" + uid + "\"");
+        }
+
+        return returnValue;
     }
 
     @Override

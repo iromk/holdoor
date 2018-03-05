@@ -4,12 +4,9 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import srv.JPAKeeper;
 
 import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Root;
 
 public class UserProjectTest {
 
@@ -18,8 +15,8 @@ public class UserProjectTest {
 
     @Before
     public void prepareManagerFactory() {
-        entityManagerFactory = Persistence.createEntityManagerFactory("test.holdoorsrv.jpa");
-        entityManager = entityManagerFactory.createEntityManager();
+//        entityManagerFactory = Persistence.createEntityManagerFactory("test.holdoorsrv.jpa");
+        entityManager = JPAKeeper.getEntityManager();
 
         clearTables("User", "Project");
     }
@@ -37,8 +34,8 @@ public class UserProjectTest {
 
     @After
     public void closeEverything() {
-        entityManager.close();
-        entityManagerFactory.close();
+        JPAKeeper.close();
+//        entityManagerFactory.close();
     }
 
     @Test
@@ -86,13 +83,9 @@ public class UserProjectTest {
 
         Project p3 = new Project();
         p3.setName("asd");
-        CriteriaBuilder crib = entityManager.getCriteriaBuilder();
-        CriteriaQuery<User> cri =  crib.createQuery(User.class);
-        Root<User> from = cri.from(User.class);
-        cri.select(from);
-        cri.where(crib.equal(from.get("uid"), user1Uid));
-        TypedQuery<User> tq = entityManager.createQuery(cri);
-        User userResult = tq.getSingleResult();
+
+        User userResult = User.findByUid(user1Uid);
+
         Assert.assertEquals(userResult.getName().getFirst(), userFirstName);
         Assert.assertEquals(userResult.getProjects().size(), 2);
         Assert.assertEquals(userResult.getProjects().toArray()[0], p1);
