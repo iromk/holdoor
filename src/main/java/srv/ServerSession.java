@@ -1,9 +1,6 @@
 package srv;
 
-import common.Environment;
-import common.FileManager;
-import common.Protocol;
-import common.Session;
+import common.*;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -30,7 +27,7 @@ public class ServerSession extends Session {
         /**
          *  Thread related objects. They should die together with the thread.
          */
-        Logger LOG = Environment.getInstance().getLogger();
+        Logger LOG = App.log(); // Environment.getInstance().getLogger();
         Socket clientSocket;
 
         try {

@@ -1,5 +1,6 @@
 package srv;
 
+import common.App;
 import common.Protocol;
 import org.junit.After;
 import org.junit.Assert;
@@ -19,6 +20,7 @@ public class AuthenticationTest {
 
     @Before
     public void RunServer() {
+        App.set().init();
         server = new Server(SERVER_PORT);
         server.start();
         try {

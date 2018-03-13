@@ -1,6 +1,7 @@
 package client.desktop;
 
 import client.UserSession;
+import common.App;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -56,9 +57,8 @@ public class ClientLoginController implements Initializable {
             url = getClass().getResource(sceneFile);
             root = FXMLLoader.load(url);
         } catch (IOException e) {
-            System.out.println("Exception on FXMLLoader.load()");
-            System.out.println("url: " + url);
-            System.out.println(e);
+            App.log().severe("Exception on FXMLLoader.load()");
+            App.log().severe("url: " + url);
             throw new RuntimeException("Fatal error while creating ClientMainWindow");
         }
         stage.setTitle("My Holdoor");

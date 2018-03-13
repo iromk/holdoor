@@ -4,11 +4,9 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import srv.JPAKeeper;
+import srv.JPAFactory;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.Query;
 
 public class UserTest {
@@ -17,7 +15,7 @@ public class UserTest {
 
     @Before
     public void prepareManagerFactory() {
-        entityManager = JPAKeeper.getEntityManager();
+        entityManager = JPAFactory.getEntityManager();
 
         clearTables("User");
 
@@ -62,7 +60,7 @@ public class UserTest {
 
     @After
     public void closeEverything() {
-        JPAKeeper.closeEntityManager();
+        JPAFactory.closeEntityManager();
     }
 
     @Test
@@ -95,10 +93,10 @@ public class UserTest {
 
     }
 
-    @Test
+    @Test//(expected = NullPointerException.class)
     public void WrongUidGiven() {
-        User hey = User.findByUid("logmi");
-        Assert.assertNull (hey);
+        User hey = User.findByUid("wrongestuidever");
+        Assert.assertNull(hey);
     }
 
 

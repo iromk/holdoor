@@ -1,6 +1,7 @@
 package client.desktop;
 
 import client.UserSession;
+import common.App;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,6 +16,9 @@ public class MyHoldoorClient extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
+        App.set().init();
+        App.log().info("Application started.");
 
         connectToServer();
 

@@ -1,13 +1,14 @@
 package srv.data;
 
+import common.App;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import srv.JPAKeeper;
+import srv.JPAFactory;
 
-import javax.jws.soap.SOAPBinding;
 import javax.persistence.*;
+import java.util.logging.Level;
 
 public class UserProjectTest {
 
@@ -15,7 +16,9 @@ public class UserProjectTest {
 
     @Before
     public void prepareManagerFactory() {
-        entityManager = JPAKeeper.getEntityManager();
+        App.set().environment(App.Environment.TEST).logLevel(Level.ALL).init();
+
+        entityManager = JPAFactory.getEntityManager();
 
         clearTables("User", "Project");
 
@@ -33,6 +36,8 @@ public class UserProjectTest {
         entityManager.getTransaction().commit();
     }
 
+
+    // TODO data via TestCases or whatever.. collections?
     private void loadKnownData() {
 
         entityManager.getTransaction().begin();
@@ -58,7 +63,7 @@ public class UserProjectTest {
 
     @After
     public void closeEverything() {
-        JPAKeeper.closeEntityManager();
+        JPAFactory.closeEntityManager();
     }
 
     @Test

@@ -1,23 +1,22 @@
-package srv;
+package common;
 
 import java.io.IOException;
 import java.util.logging.*;
 
-public class ServerLogger {
-
-    private static final String DEFAULT_LOG_FILE = "./data/log/holdoor_server.log";
+public class AppLogger {
 
     private static Logger logger = null;
 
-    static {
-        setup();
+
+    public AppLogger(Class appClass, String logFile, Level logLevel) {
+        setup(appClass, logFile, logLevel);
     }
 
-    public static Logger setup() {
+    public void setup(Class appClass, String logFile, Level logLevel) {
 
-        if(logger != null) return logger;
+        if(logger != null) return;
 
-        logger = Logger.getLogger(Server.class.getName());
+        logger = Logger.getLogger(appClass.getName());
 
         Handler consoleHandler = null;
         Handler fileHandler  = null;
@@ -31,20 +30,25 @@ public class ServerLogger {
             consoleHandler.setLevel(Level.ALL);
             */
 
-            fileHandler  = new FileHandler(DEFAULT_LOG_FILE, true);
+            fileHandler  = new FileHandler(logFile, true);
             fileHandler.setFormatter(new SimpleFormatter()); // plain text is enough for now
             logger.addHandler(fileHandler);
-            fileHandler.setLevel(Level.ALL);
+            fileHandler.setLevel(logLevel);
 
-            logger.setLevel(Level.ALL);
+            logger.setLevel(logLevel);
 
         } catch(IOException e){
             // treat problem with logging to a file as not fatal, but report
             logger.log(Level.WARNING, "FileHandler cannot be initialized. Logging to console only.", e);
         }
 
-        return logger;
+//        return logger;
 
+    }
+
+    public Logger getLogger() {
+        if(logger == null) throw new RuntimeException("Application was not initiated correctly. Logger not set.");
+        return logger;
     }
 
 

@@ -1,15 +1,12 @@
 package common;
 
-import srv.Server;
-import srv.ServerLogger;
-
 import java.io.*;
 import java.util.logging.Logger;
 
 public class FileManager {
 
     public static void receiveBinary(Long expectedSize, InputStream socketInputStream) {
-        final Logger LOG = Environment.getInstance().getLogger();
+        final Logger LOG = App.log(); //Environment.getInstance().getLogger();
         File tempFile = new File("./data/tmp/file.pdf");
         try {
             BufferedOutputStream outTemp = new BufferedOutputStream(new FileOutputStream(tempFile));

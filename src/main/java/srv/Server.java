@@ -1,18 +1,12 @@
 package srv;
 
-import common.Environment;
-import common.FileManager;
+import common.App;
 import common.Protocol;
 
 import java.io.*;
 import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.logging.Logger;
 
 public class Server {
-
-    private final Logger LOG = ServerLogger.setup();
-    private final Environment environment =  Environment.getInstance();
 
     private ServerSession serverSession;
 
@@ -29,17 +23,17 @@ public class Server {
 
     public Server(int port) {
 
-        environment.setLogger(LOG);
+        App.set().environment(App.Environment.DEV).init();
 
         serverSocket = null;
         this.port = port;
 
         try {
             openSocket(port);
-            LOG.info("Socket opened on port " + port);
+            App.log().info("Socket opened on port " + port);
         } catch (SocketNotOpenedException e) {
-            LOG.severe("Cannot open socket on port " + port);
-            LOG.severe(e.getMessage());
+            App.log().severe("Cannot open socket on port " + port);
+            App.log().severe(e.getMessage());
         }
     }
 
@@ -63,7 +57,7 @@ public class Server {
         serverSession.interrupt();
         try {
             serverSocket.close();
-            LOG.info("Server stopped");
+            App.log().info("Server stopped");
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,5 +1,7 @@
 package common;
 
+import client.UserSession;
+
 public interface Protocol {
 
     int DEFAULT_PORT = 0x1D00;
@@ -16,5 +18,7 @@ public interface Protocol {
      * Response to the client if its session is authorized successfully.
      */
     String OK_TOKEN = "WELCOME";
+
+//    UserSession sessionProvider = new UserSession();
 
 }
