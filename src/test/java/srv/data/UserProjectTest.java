@@ -1,73 +1,28 @@
 package srv.data;
 
-import common.App;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import srv.JPAFactory;
 
 import javax.persistence.*;
-import java.util.logging.Level;
 
 public class UserProjectTest {
 
-    private EntityManager entityManager;
+    @BeforeClass
+    public static void setUpClass() {
 
-    @Before
-    public void prepareManagerFactory() {
-        App.set().environment(App.Environment.TEST).logLevel(Level.ALL).init();
-
-        entityManager = JPAFactory.getEntityManager();
-
-        clearTables("User", "Project");
-
-        loadKnownData();
-    }
-
-    private void clearTables(String... tableNames) {
-        if(tableNames.length == 0) tableNames[0] = "User";
-        entityManager.getTransaction().begin();
-        for (String table: tableNames) {
-            String hql="delete from " + table;
-            Query query= entityManager.createQuery(hql);
-            query.executeUpdate();
-        }
-        entityManager.getTransaction().commit();
-    }
-
-
-    // TODO data via TestCases or whatever.. collections?
-    private void loadKnownData() {
-
-        entityManager.getTransaction().begin();
-
-        User nextUser;
-        nextUser = new User("Jane", "Doe", "jd1989");
-        entityManager.persist(nextUser);
-        nextUser = new User("Mac", "Os", "applejuice");
-        entityManager.persist(nextUser);
-        nextUser = new User("Keep", "Simple", "stupid");
-        entityManager.persist(nextUser);
-        nextUser.getName().setFirst("Keep It");
-        entityManager.persist(nextUser);
-        nextUser = new User("Sarah", "Connor", "weallbedead");
-        entityManager.persist(nextUser);
-        nextUser = new User("Yankee", "Go", "dunno");
-        entityManager.persist(nextUser);
-        nextUser = new User("World", "Peace", "nya");
-        entityManager.persist(nextUser);
-
-        entityManager.getTransaction().commit();
+        new FixtureSetup_Users(true);
+        new FixtureSetup_Projects(true);
     }
 
     @After
-    public void closeEverything() {
+    public void close() {
         JPAFactory.closeEntityManager();
     }
 
     @Test
     public void AddUserAnd2ProjectsTest() {
+
+        final EntityManager entityManager = JPAFactory.getEntityManager();
 
         final String userFirstName = "Conan";
         final String userLastName = "Barber";
@@ -107,8 +62,8 @@ public class UserProjectTest {
 
     @Test
     public void FindUserAndAdd3Projects() {
-        User hey = User.findByUid("logmi");
-        Assert.assertNull (hey);
+        User hey = User.findByUid("dunno");
+        Assert.assertNotNull (hey);
     }
 
 }
