@@ -2,10 +2,7 @@ package srv;
 
 import client.UserSession;
 import common.Protocol;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.*;
 
@@ -15,6 +12,11 @@ public class ReceiveSampleFileTest {
     final String SERVER_HOST = "localhost";
 
     Server server;
+
+    @BeforeClass
+    public static void setUpClass() {
+        new TestsSetup();
+    }
 
     @Before
     public void RunServer() {
@@ -41,6 +43,7 @@ public class ReceiveSampleFileTest {
             Thread.sleep(2_000);
             BufferedInputStream sent = new BufferedInputStream(new FileInputStream(sentFileName));
             BufferedInputStream rcvd = new BufferedInputStream(new FileInputStream(rcvdFileName));
+            // actually, file sizes. should be equal
             Assert.assertTrue(sent.available() == rcvd.available());
             byte[] sentBuffer, rcvdBuffer;
             sentBuffer = new byte[10_240];

@@ -20,8 +20,8 @@ public class Main {
     private static Session session = null;
 
     public static void main(String[] args) {
-        App.set().init();
-        if(App.log() == null) System.out.println("nul");
+        App.set().environment(App.Environment.DEV).init();
+        if(App.log() == null) System.out.println("log is nul");
     }
 
     public static void main2(String[] args) {

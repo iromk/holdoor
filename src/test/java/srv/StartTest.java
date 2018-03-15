@@ -1,10 +1,7 @@
 package srv;
 
 import common.Protocol;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -15,6 +12,11 @@ public class StartTest {
     final String SERVER_HOST = "localhost";
 
     Server server;
+
+    @BeforeClass
+    public static void setUpClass() {
+        new TestsSetup();
+    }
 
     @Before
     public void RunServer() {

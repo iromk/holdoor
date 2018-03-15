@@ -41,23 +41,39 @@ public class ServerSession extends Session {
             DataOutputStream out = new DataOutputStream(clientSocket.getOutputStream());
 
             boolean loop = true;
+            boolean interrupted = false;
             while (loop) {
-                String text = in.readUTF();
-                if (text.startsWith(Protocol.HELLO_TOKEN)) {
-                    out.writeUTF(Protocol.OK_TOKEN);
-                    LOG.info("Session authorized");
-                    loop = false;
-                }
+                interrupted = interrupted();
+                if(interrupted)
+                    throw new InterruptedException();
+                if(in.available() > 0) {
+                    String text = in.readUTF();
+                    if (text.startsWith(Protocol.HELLO_TOKEN)) {
+                        out.writeUTF(Protocol.OK_TOKEN);
+                        LOG.info("Session authorized");
+                        loop = false;
+                    }
+                } else sleep(1);
             }
 
-
             LOG.info("Waiting for incoming file");
-//                for(loop = true; loop;) {
-            Long size = new Long(in.readUTF());
+            loop = true;
+            Long size = 0L;
+            while (loop) {
+                interrupted = interrupted();
+                if(interrupted)
+                    throw new InterruptedException();
+                if(in.available() > 0) {
+                    size = new Long(in.readUTF());
+                    loop = false;
+                } else sleep(1);
+            }
+
             LOG.info("Incoming file size " + size);
             FileManager.receiveBinary(size, clientSocket.getInputStream());
-//                }
 
+        } catch (InterruptedException e) {
+            App.log().warning("Session interrupted. " + e.toString());
         } catch (Server.SocketNotOpenedException e) {
             LOG.severe("Server start failed");
         } catch (IOException e) {

@@ -23,8 +23,6 @@ public class Server {
 
     public Server(int port) {
 
-        App.set().environment(App.Environment.DEV).init();
-
         serverSocket = null;
         this.port = port;
 
@@ -56,9 +54,16 @@ public class Server {
     public void stop() {
         serverSession.interrupt();
         try {
-            serverSocket.close();
+            // wait for session to stop correctly
+            App.log().info("serverSession is interrupting.....");
+            serverSession.join();
+            App.log().info("serverSession interrupted");
+            // then do the rest stuffs
+            serverSocket.close(); // TODO why is it here? Maybe it's session responsibility?
             App.log().info("Server stopped");
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }

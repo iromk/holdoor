@@ -2,10 +2,7 @@ package srv;
 
 import common.App;
 import common.Protocol;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.*;
 import java.net.Socket;
@@ -18,9 +15,13 @@ public class AuthenticationTest {
     Server server;
     Socket socket;
 
+    @BeforeClass
+    public static void setUpClass() {
+        new TestsSetup();
+    }
+
     @Before
     public void RunServer() {
-        App.set().init();
         server = new Server(SERVER_PORT);
         server.start();
         try {
@@ -39,6 +40,7 @@ public class AuthenticationTest {
             os.writeUTF(Protocol.HELLO_TOKEN + " 1 test");
             final String response = is.readUTF();
             Assert.assertTrue(response.startsWith(Protocol.OK_TOKEN));
+
 
         } catch (IOException e) {
             e.printStackTrace();
