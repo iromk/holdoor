@@ -13,7 +13,7 @@ public class JPAFactory {
 
     static {
         String jpaName = null;
-        switch (App.get().environment()) {
+        switch (App.get().mode()) {
             case DEV: jpaName = "dev.holdoorsrv.jpa"; break;
             case PROD: jpaName = "prod.holdoorsrv.jpa"; break;
             case TEST: jpaName = "test.holdoorsrv.jpa"; break;
