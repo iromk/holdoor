@@ -31,7 +31,7 @@ public class Server {
             App.log().info("Socket opened on port " + port);
         } catch (SocketNotOpenedException e) {
             App.log().severe("Cannot open socket on port " + port);
-            App.log().severe(e.getMessage());
+            App.log().severe(App.getStackTrace(e));
         }
     }
 
@@ -55,9 +55,9 @@ public class Server {
         serverSession.interrupt();
         try {
             // wait for session to stop correctly
-            App.log().info("serverSession is interrupting.....");
+            App.verbose("serverSession is interrupting.....");
             serverSession.join();
-            App.log().info("serverSession interrupted");
+            App.verbose("serverSession interrupted");
             // then do the rest stuffs
             serverSocket.close(); // TODO why is it here? Maybe it's session responsibility?
             App.log().info("Server stopped");

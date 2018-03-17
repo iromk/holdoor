@@ -19,13 +19,13 @@ public class ReceiveSampleFileTest {
     }
 
     @Before
-    public void RunServer() {
+    public void runServer() {
         server = new Server();
         server.start();
     }
 
     @Test
-    public void ReceiveSampleFile() {
+    public void receiveSampleFile() {
         // preps
         final String sentFileName = "./data/sample/Starter Set - Characters.pdf";
         final String rcvdFileName = "./data/tmp/file.pdf";
@@ -64,7 +64,7 @@ public class ReceiveSampleFileTest {
     }
 
     @After
-    public void StopServer() {
+    public void stopServer() {
         server.stop();
     }
 

@@ -2,6 +2,7 @@ package srv;
 
 import common.App;
 import common.Protocol;
+import common.loggers.LogContext;
 import org.junit.*;
 
 import java.io.*;
@@ -21,7 +22,7 @@ public class AuthenticationTest {
     }
 
     @Before
-    public void RunServer() {
+    public void runServer() {
         server = new Server(SERVER_PORT);
         server.start();
         try {
@@ -32,12 +33,13 @@ public class AuthenticationTest {
     }
 
     @Test
-    public void SimpleAuthenticationTest() {
+    public void simpleAuthenticationTest() {
         try {
             DataOutputStream os = new DataOutputStream(socket.getOutputStream());
             DataInputStream is = new DataInputStream(socket.getInputStream());
 
-            os.writeUTF(Protocol.HELLO_TOKEN + " 1 test");
+            final String helloRequest = Protocol.HELLO_TOKEN + " 1 test";
+            os.writeUTF(helloRequest);
             final String response = is.readUTF();
             Assert.assertTrue(response.startsWith(Protocol.OK_TOKEN));
 
@@ -49,7 +51,7 @@ public class AuthenticationTest {
 
 
     @After
-    public void StopServer() {
+    public void stopServer() {
         server.stop();
     }
 }

@@ -1,6 +1,7 @@
 package srv;
 
 import common.App;
+import common.Mode;
 
 import java.util.logging.Level;
 
@@ -8,9 +9,9 @@ public class TestsSetup {
 
     public TestsSetup() {
 
-        App.set()
-           .environment(App.Environment.TEST)
-           .logLevel(Level.ALL)
+        App.config("UnitTester")
+           .set(Mode.TEST)
+           .set(Level.ALL)
            .init();
     }
 

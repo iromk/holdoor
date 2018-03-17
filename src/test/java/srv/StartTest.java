@@ -19,13 +19,13 @@ public class StartTest {
     }
 
     @Before
-    public void RunServer() {
+    public void runServer() {
         server = new Server();
         server.start();
     }
 
     @Test
-    public void ConnectionAcceptanceTest() {
+    public void connectionAcceptanceTest() {
         try (Socket testSocket = new Socket(SERVER_HOST, SERVER_PORT)) {
             testSocket.close();
         } catch (IOException e) {
@@ -35,7 +35,7 @@ public class StartTest {
     }
 
     @After
-    public void StopServer() {
+    public void stopServer() {
         server.stop();
     }
 
