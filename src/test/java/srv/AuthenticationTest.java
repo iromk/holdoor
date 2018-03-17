@@ -1,6 +1,6 @@
 package srv;
 
-import common.App;
+import common.core.App;
 import common.Protocol;
 import common.loggers.LogContext;
 import org.junit.*;
@@ -42,7 +42,6 @@ public class AuthenticationTest {
             os.writeUTF(helloRequest);
             final String response = is.readUTF();
             Assert.assertTrue(response.startsWith(Protocol.OK_TOKEN));
-
 
         } catch (IOException e) {
             e.printStackTrace();

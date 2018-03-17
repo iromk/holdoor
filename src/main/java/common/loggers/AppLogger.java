@@ -1,6 +1,4 @@
-package common;
-
-import common.loggers.SimplierFormatter;
+package common.loggers;
 
 import java.io.IOException;
 import java.util.logging.*;
@@ -23,7 +21,7 @@ public class AppLogger {
         logger = Logger.getLogger(loggerName);
 
         // Replace formatter of the handlers of the global logger
-        // with custom SimplierFormatter
+        // with custom SimplerFormatter
         simplifyGlobalLogger();
 
         try { // to create and attach console and file handlers
@@ -57,7 +55,7 @@ public class AppLogger {
         Logger globalLogger = Logger.getLogger(""); // Logger.getGlobal(); // why doesn't work?
         Handler[] handlers = globalLogger.getHandlers();
         for(Handler handler : handlers) {
-            handler.setFormatter(new SimplierFormatter());
+            handler.setFormatter(new SimplerFormatter());
         }
     }
 

@@ -1,13 +1,11 @@
-package common;
+package common.core;
 
+import common.loggers.AppLogger;
 import common.loggers.LogContext;
-import sun.rmi.runtime.Log;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,7 +21,8 @@ public class App {
     private Boolean initialized = false;
 
     private Logger logger;
-    private Boolean beVerbose = true;
+    private Boolean verboseEnabled;
+    private Boolean contextEnabled;
 
     /**
      * Builder "bricks"
@@ -40,8 +39,6 @@ public class App {
             instance = new App();
         return instance;
     }
-
-    public static class Context extends LogContext {}
 
     public static class Config {
 
@@ -61,7 +58,7 @@ public class App {
          * Log levels.
          * Its default value cannot be predefined because it depends on mode value.
          */
-        private Optional<Level> logLevel;
+        private Optional<Level> logLevel = Optional.empty();
         private Optional<Level> consoleLogLevel;
         private Optional<Level> fileLogLevel;
 
@@ -76,13 +73,34 @@ public class App {
             return this;
         }
 
+        /**
+         * Logging tools switchers.
+         */
+        private Optional<Boolean> contextEnabled = Optional.empty();
+        private Optional<Boolean> verboseEnabled = Optional.empty();
+
+        public Config context(Boolean context) { contextEnabled = Optional.of(context); return this; }
+        public Config verbose(Boolean verbose) { verboseEnabled = Optional.of(verbose); return this; }
+
         public void init() {
 
             App.instance.projectName = App.baseProjectName + "." + this.name;
 
             App.instance.mode = this.mode;
 
-            App.instance.logLevel = this.logLevel.orElse(defaultLogLevel());
+            // setup values provided or use default values for current mode.
+            switch (App.instance.mode) {
+                case DEV:
+                case TEST:
+                    App.instance.logLevel = logLevel.orElse(Level.ALL);
+                    App.instance.contextEnabled = contextEnabled.orElse(true);
+                    App.instance.verboseEnabled = verboseEnabled.orElse(true);
+                    break;
+                case PROD:
+                    App.instance.logLevel = logLevel.orElse(Level.WARNING);
+                    App.instance.contextEnabled = contextEnabled.orElse(false);
+                    App.instance.verboseEnabled = verboseEnabled.orElse(false);
+            }
 
             final String logFileName = App.instance.projectName + "_" + App.instance.mode + ".log";
             final String logFile = logFileLocation + logFileName;
@@ -93,21 +111,11 @@ public class App {
 
         }
 
-        private Level defaultLogLevel() {
-            Level returnValue = Level.OFF;
-            switch (App.instance.mode) {
-                case DEV:
-                case TEST: returnValue = Level.ALL; break;
-                case PROD: returnValue = Level.WARNING;
-            }
-            return returnValue;
-        }
-
     }
 
     public static Config config(String name) {
         try {
-            if(getInstance().initialized) {
+            if(getInstance().initialized && instance.mode != Mode.TEST) {
                 final String msg = "Second attempt to initialize the app detected. Aborted to prevent an unpredictable behaviour.";
                 throw new RuntimeException(msg);
             }
@@ -128,14 +136,21 @@ public class App {
         return sw.toString();
     }
 
-    static public LogContext context(String contextDescription) { return new LogContext(contextDescription); }
+    static public LogContext context(String contextDescription) {
+        if(instance.contextEnabled)
+            return new LogContext(contextDescription);
+        else
+            return new LogContext();
+    }
+
+    public static Boolean isContextEnabled() { return instance.contextEnabled; }
 
     static public Logger log() { return instance.logger; }
 
     static public LogContext log(LogContext context) { return context; }
 
     static public void verbose(String text) {
-        if(instance.beVerbose) {
+        if(instance.verboseEnabled) {
             System.out.print("> ");
             System.out.println(text);
         }

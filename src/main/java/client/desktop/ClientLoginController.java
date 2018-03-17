@@ -1,7 +1,7 @@
 package client.desktop;
 
 import client.UserSession;
-import common.App;
+import common.core.App;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

@@ -1,6 +1,6 @@
 package srv;
 
-import common.App;
+import common.core.App;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;

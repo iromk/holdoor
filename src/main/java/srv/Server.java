@@ -1,6 +1,6 @@
 package srv;
 
-import common.App;
+import common.core.App;
 import common.Protocol;
 
 import java.io.*;

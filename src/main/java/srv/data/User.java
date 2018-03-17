@@ -1,6 +1,6 @@
 package srv.data;
 
-import common.App;
+import common.core.App;
 import org.hibernate.annotations.GenericGenerator;
 import srv.JPAFactory;
 

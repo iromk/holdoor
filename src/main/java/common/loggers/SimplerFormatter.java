@@ -3,7 +3,7 @@ package common.loggers;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
-public class SimplierFormatter extends Formatter {
+public class SimplerFormatter extends Formatter {
 
     @Override
     public String format(LogRecord record) {
