@@ -1,9 +1,7 @@
 package client;
 
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import common.Protocol;
 import common.Session;
-import srv.Server;
 
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -12,9 +10,11 @@ import java.net.SocketAddress;
 
 public class UserSession extends Session {
 
-    public Socket socket;
     public DataOutputStream out;
     public DataInputStream in;
+
+    final private SocketAddress socketAddress = new InetSocketAddress(Protocol.DEFAULT_HOST, Protocol.DEFAULT_PORT);
+    final private Socket socket = new Socket();
 
     private static UserSession thisSession;
 
@@ -25,31 +25,27 @@ public class UserSession extends Session {
         return thisSession;
     }
 
-    private UserSession() {
-    }
+    private UserSession() {}
 
     public void authenticate(String username, String password) throws IOException {
 
-        if(socket == null || !socket.isConnected()) {
+        if(!socket.isConnected()) {
             establish();
 
             throw new IOException("Socket ");
         }
-
     }
 
 
     public void establish() {
-        socket = new Socket();
-        SocketAddress socketAddress = new InetSocketAddress("localhost", Protocol.DEFAULT_PORT);
-
 
         try {
             socket.connect(socketAddress);
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
+
             out.writeUTF(Protocol.HELLO_TOKEN);
-            if(!in.readUTF().equals(Protocol.OK_TOKEN))
+            if(!in.readUTF().equals(Protocol.WELCOME_TOKEN))
                 throw new RuntimeException("Unexpected response from server");
 
         } catch (IOException e) {

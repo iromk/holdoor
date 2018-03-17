@@ -4,6 +4,7 @@ import client.UserSession;
 
 public interface Protocol {
 
+    String DEFAULT_HOST = "localhost";
     int DEFAULT_PORT = 0x1D00;
 
     /**
@@ -17,7 +18,7 @@ public interface Protocol {
     /**
      * Response to the client if its session is authorized successfully.
      */
-    String OK_TOKEN = "WELCOME";
+    String WELCOME_TOKEN = "WELCOME_TOKEN";
 
 //    UserSession sessionProvider = new UserSession();
 

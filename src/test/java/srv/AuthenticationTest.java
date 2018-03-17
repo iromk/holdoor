@@ -1,8 +1,6 @@
 package srv;
 
-import common.core.App;
 import common.Protocol;
-import common.loggers.LogContext;
 import org.junit.*;
 
 import java.io.*;
@@ -41,7 +39,7 @@ public class AuthenticationTest {
             final String helloRequest = Protocol.HELLO_TOKEN + " 1 test";
             os.writeUTF(helloRequest);
             final String response = is.readUTF();
-            Assert.assertTrue(response.startsWith(Protocol.OK_TOKEN));
+            Assert.assertTrue(response.startsWith(Protocol.WELCOME_TOKEN));
 
         } catch (IOException e) {
             e.printStackTrace();

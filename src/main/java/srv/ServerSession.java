@@ -50,7 +50,7 @@ public class ServerSession extends Session {
                 if(in.available() > 0) {
                     String text = in.readUTF();
                     if (text.startsWith(Protocol.HELLO_TOKEN)) {
-                        out.writeUTF(Protocol.OK_TOKEN);
+                        out.writeUTF(Protocol.WELCOME_TOKEN);
                         LOG.info("Session authorized");
                         loop = false;
                     }
