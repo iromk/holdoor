@@ -1,5 +1,13 @@
 package common;
 
+import common.loggers.LogContext;
+import sun.rmi.runtime.Log;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -8,25 +16,24 @@ import java.util.logging.Logger;
  */
 public class App {
 
+    private static String baseProjectName = "Holdoor";
+
     static protected App instance;
 
+    private Boolean initialized = false;
+
     private Logger logger;
+    private Boolean beVerbose = true;
 
     /**
      * Builder "bricks"
      */
     private Level logLevel;
-    private Class mainClass;
+//    private Class mainClass;
     private String logFile;
-    private Environment environment;
+    private String projectName;
+    private Mode mode;
 
-
-    public enum Environment {
-
-        TEST, DEV, PROD
-//    Environment() {}
-
-    }
 
     private static App getInstance() {
         if(instance == null)
@@ -34,64 +41,104 @@ public class App {
         return instance;
     }
 
-    public static App set() {
+    public static class Context extends LogContext {}
 
-        return getInstance();
+    public static class Config {
 
-    }
+        public Config(String name) { this.name = name; }
 
-    public static App get() {
+        private String name = null;
 
-        return getInstance();
+        /**
+         * Run mode. Default is Mode.DEV.
+         */
+        private Mode mode = Mode.DEV;
 
-    }
+        public Config setMode(Mode mode) { this.mode = mode; return this; }
+        public Config set(Mode mode) { setMode(mode); return this; }
 
-    public App defaults() {
-        return init();
-    }
+        /**
+         * Log levels.
+         * Its default value cannot be predefined because it depends on mode value.
+         */
+        private Optional<Level> logLevel;
+        private Optional<Level> consoleLogLevel;
+        private Optional<Level> fileLogLevel;
 
-    public App logLevel(Level logLevel) {
-        this.logLevel = logLevel;
-        return this;
-    }
+        private String logFileLocation = "./data/log/";
 
-    public App environment(Environment env) {
-        this.environment = env;
-        return this;
-    }
-
-    public Environment environment() {
-        return this.environment;
-    }
-
-
-    public App logFile(String logFile) {
-        this.logFile = logFile;
-        return this;
-    }
-
-    public App init() {
-        if(environment == null) environment = Environment.DEV;
-
-        switch (environment) {
-            case DEV:
-            case TEST: logLevel = Level.ALL; break;
-            case PROD: logLevel = Level.SEVERE; break;
+        public Config setLogLevel(Level level) { this.logLevel = Optional.of(level); return this; }
+        public Config set(Level level) { setLogLevel(level); return this; }
+        public Config set(Level logLevel, Level consoleLogLevel, Level fileLogLevel) {
+            this.logLevel = Optional.of(logLevel);
+            this.consoleLogLevel = Optional.of(consoleLogLevel);
+            this.fileLogLevel = Optional.of(fileLogLevel);
+            return this;
         }
 
-        if(mainClass == null)
-            mainClass = App.class;
+        public void init() {
 
-        if(logFile == null)
-            logFile = "./data/log/holdoor_" + mainClass.getName() + "_" + environment + ".log";
+            App.instance.projectName = App.baseProjectName + "." + this.name;
 
-        logger = new AppLogger(mainClass, logFile, logLevel).getLogger();
+            App.instance.mode = this.mode;
 
-        return this;
+            App.instance.logLevel = this.logLevel.orElse(defaultLogLevel());
+
+            final String logFileName = App.instance.projectName + "_" + App.instance.mode + ".log";
+            final String logFile = logFileLocation + logFileName;
+
+            App.instance.logger = new AppLogger(name, logFile, App.instance.logLevel).getLogger();
+
+            App.instance.initialized = true;
+
+        }
+
+        private Level defaultLogLevel() {
+            Level returnValue = Level.OFF;
+            switch (App.instance.mode) {
+                case DEV:
+                case TEST: returnValue = Level.ALL; break;
+                case PROD: returnValue = Level.WARNING;
+            }
+            return returnValue;
+        }
+
     }
 
-    static public Logger log() {
-        return instance.logger;
+    public static Config config(String name) {
+        try {
+            if(getInstance().initialized) {
+                final String msg = "Second attempt to initialize the app detected. Aborted to prevent an unpredictable behaviour.";
+                throw new RuntimeException(msg);
+            }
+        } catch (RuntimeException e) {
+            App.log().warning(App.getStackTrace(e));
+            throw e;
+        }
+        return new Config(name);
+    }
+
+    public Mode mode() { return mode; }
+
+    public static App get() { return getInstance(); }
+
+    public static String getStackTrace(Exception e) {
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+        return sw.toString();
+    }
+
+    static public LogContext context(String contextDescription) { return new LogContext(contextDescription); }
+
+    static public Logger log() { return instance.logger; }
+
+    static public LogContext log(LogContext context) { return context; }
+
+    static public void verbose(String text) {
+        if(instance.beVerbose) {
+            System.out.print("> ");
+            System.out.println(text);
+        }
     }
 
 }
