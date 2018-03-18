@@ -41,9 +41,20 @@ public class SessionManagerTest {
 
     private void doOpenThreeSessions() {
         try {
-            Socket testSocket1 = new Socket(SERVER_HOST, SERVER_PORT);
-            Socket testSocket2 = new Socket(SERVER_HOST, SERVER_PORT);
-            Socket testSocket3 = new Socket(SERVER_HOST, SERVER_PORT);
+            new Socket(SERVER_HOST, SERVER_PORT);
+            new Socket(SERVER_HOST, SERVER_PORT);
+            new Socket(SERVER_HOST, SERVER_PORT);
+        } catch (IOException e) {
+            App.log().severe("Test preparation failed.\n");
+            App.log().severe(App.getStackTrace(e));
+            e.printStackTrace();
+        }
+    }
+
+    private void doOpenNSessions(int N) {
+        try {
+            while(N-->0)
+                new Socket(SERVER_HOST, SERVER_PORT);
         } catch (IOException e) {
             App.log().severe("Test preparation failed.\n");
             App.log().severe(App.getStackTrace(e));
@@ -68,9 +79,37 @@ public class SessionManagerTest {
     }
 
     @Test
+    public void openOneSessionsTest() {
+        SessionManager sessionManager = server.getSessionManager();
+        final int N = 1;
+        doOpenNSessions(N);
+        waitASec();
+        Assert.assertEquals(N, sessionManager.size());
+    }
+
+    @Test
+    public void open50SessionsTest() {
+        SessionManager sessionManager = server.getSessionManager();
+        final int N = 50;
+        doOpenNSessions(N);
+        waitASec();
+        Assert.assertEquals(N, sessionManager.size());
+    }
+
+    @Test
     public void gentlyCloseTest() {
         SessionManager sessionManager = server.getSessionManager();
         doOpenThreeSessions();
+        waitASec();
+        sessionManager.stopGently();
+        Assert.assertEquals(0, sessionManager.size());
+    }
+
+    @Test
+    public void gentlyClose55Test() {
+        SessionManager sessionManager = server.getSessionManager();
+        final int N = 55;
+        doOpenNSessions(N);
         waitASec();
         sessionManager.stopGently();
         Assert.assertEquals(0, sessionManager.size());
