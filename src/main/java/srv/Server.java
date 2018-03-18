@@ -8,7 +8,7 @@ import java.net.ServerSocket;
 
 public class Server {
 
-    private ServerSession serverSession;
+    private SessionManager sessionManager;
 
     private int port;
     private ServerSocket serverSocket;
@@ -47,24 +47,31 @@ public class Server {
     }
 
     public void start() {
-        serverSession = new ServerSession(serverSocket);
-        serverSession.start();
+        sessionManager = new SessionManager(serverSocket);
+        sessionManager.start();
     }
 
-    public void stop() {
-        serverSession.interrupt();
+    public SessionManager getSessionManager() {
+        return sessionManager;
+    }
+
+    synchronized public void stop() {
         try {
-            // wait for session to stop correctly
-            App.verbose("serverSession is interrupting.....");
-            serverSession.join();
-            App.verbose("serverSession interrupted");
-            // then do the rest stuffs
-            serverSocket.close(); // TODO why is it here? Maybe it's session responsibility?
-            App.log().info("Server stopped");
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            if (sessionManager == null) {
+                App.log().warning("There is no active sessionManager on server.stop().");
+            } else {
+                App.verbose("Stopping session. Shutdown clients gently...");
+                // wait for session to stop correctly
+                App.verbose("sessionManager is interrupting.....");
+                sessionManager.stopGently();
+                sessionManager.join();
+                App.verbose("sessionManager interrupted");
+                // then do the rest stuffs
+            }
+            serverSocket.close();
+            App.log().info("Sockets closed and server stopped.");
+        } catch (IOException | InterruptedException e) {
+            App.log().severe("oO Unpredictable exception.\n" + App.getStackTrace(e));
         }
     }
 }

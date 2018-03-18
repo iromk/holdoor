@@ -1,11 +1,14 @@
-package srv;
+package srv.net;
 
 import client.UserSession;
 import common.Protocol;
 import org.junit.*;
+import srv.Server;
+import srv.TestsSetup;
 
 import java.io.*;
 
+@Ignore
 public class ReceiveSampleFileTest {
 
     final int SERVER_PORT = Protocol.DEFAULT_PORT;
