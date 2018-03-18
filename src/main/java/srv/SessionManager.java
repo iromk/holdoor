@@ -13,7 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class SessionManager extends Thread {
 
     volatile private ServerSocket serverSocket;
-    volatile private CopyOnWriteArrayList<Session> activeClientSessions = new CopyOnWriteArrayList<>();
+    volatile private CopyOnWriteArrayList<ClientSession> activeClientSessions = new CopyOnWriteArrayList<>();
 
     volatile private boolean active = true;
 
@@ -46,8 +46,12 @@ public class SessionManager extends Thread {
                     throw new InterruptedException();
 
                 Socket acceptedConnection = serverSocket.accept();
-                App.log().info("Connected new session " + acceptedConnection.toString());
-                activeClientSessions.add(new ClientSession(acceptedConnection, this));
+                if(active) {
+                    App.log().info("Connected new session " + acceptedConnection.toString());
+                    activeClientSessions.add(new ClientSession(acceptedConnection, this));
+                } else {
+                    App.verbose("Fake connection requested. Deactivating server.");
+                }
             }
       /*
             while (loop) {
@@ -110,12 +114,14 @@ public class SessionManager extends Thread {
         }
     }
 
-    private void closeClientSessions() {
+    public void removeClientSession(ClientSession clientSession) {
+        activeClientSessions.remove(clientSession);
+    }
+
+    synchronized private void closeClientSessions() {
         if(!activeClientSessions.isEmpty()) {
-            for (Session acs : activeClientSessions) {
-                acs.close();
-            }
-            activeClientSessions.clear();
+            int n = activeClientSessions.size();
+            while(n-->0) activeClientSessions.get(n).close();
         }
     }
 
