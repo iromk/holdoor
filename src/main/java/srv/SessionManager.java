@@ -100,7 +100,7 @@ public class SessionManager extends Thread {
         finally {
             stopGently();
         }
-        App.verbose("manager stopped");
+        App.verbose("SessionManager stopped");
     }
 
     public int size() {
@@ -130,7 +130,7 @@ public class SessionManager extends Thread {
             int n = activeClientSessions.size();
             while(n-->0) activeClientSessions.get(n).close();
         }
-        App.verbose("close client session");
+        App.verbose("Closed client sessions");
     }
 
 }

@@ -11,7 +11,6 @@ import java.net.Socket;
 
 public class Listener extends Thread {
 
-    private Socket socket;
     private Session session;
 
     public Listener(Session session) {
@@ -25,7 +24,7 @@ public class Listener extends Thread {
 
             JsonArray ja = new JsonArray();
             ja.add(new Name("aaa","bbbb"));
-            DataInputStream inputStream = new DataInputStream(socket.getInputStream());
+            DataInputStream inputStream = new DataInputStream(session.getInputStream());
             while(!interrupted()) {
                 if(inputStream.available() > 0) {
                     SessionContext sc = session.getSuitableContextController();
@@ -37,8 +36,9 @@ public class Listener extends Thread {
         } catch (IOException | InterruptedException e) {
             App.log().severe("Unexpected error in Listener");
             App.log().severe(App.getStackTrace(e));
-            ;
+            throw new RuntimeException(e);
         } finally {
+            App.verbose("leave listener");
         }
 
     }

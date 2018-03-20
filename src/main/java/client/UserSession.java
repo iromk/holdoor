@@ -17,7 +17,6 @@ public class UserSession extends Session {
 //    ObjectOutputStream objectOutput;
 
     final private SocketAddress socketAddress = new InetSocketAddress(Protocol.DEFAULT_HOST, Protocol.DEFAULT_PORT);
-    final private Socket socket = new Socket();
 
     private static UserSession thisSession;
 
@@ -28,7 +27,7 @@ public class UserSession extends Session {
         return thisSession;
     }
 
-    private UserSession() {}
+    private UserSession() { socket = new Socket(); }
 
     public void authenticate(String username, String password) throws IOException {
 
@@ -68,7 +67,6 @@ public class UserSession extends Session {
 
             File file = new File(filename);
 
-//            new Listener(this).run();
             OutputStream socketOutputStream = socket.getOutputStream();
 
             {

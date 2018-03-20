@@ -8,6 +8,7 @@ import srv.TestsSetup;
 import java.io.*;
 import java.net.Socket;
 
+@Ignore
 public class AuthenticationTest {
 
     final int SERVER_PORT = 4242;

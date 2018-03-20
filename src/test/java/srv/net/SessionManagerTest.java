@@ -1,5 +1,6 @@
 package srv.net;
 
+import clojure.lang.Obj;
 import common.Protocol;
 import common.core.App;
 import org.junit.*;
@@ -8,6 +9,7 @@ import srv.SessionManager;
 import srv.TestsSetup;
 
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class SessionManagerTest {
@@ -41,6 +43,9 @@ public class SessionManagerTest {
 
     private void doOpenThreeSessions() {
         try {
+//            ObjectOutputStream o1 = new ObjectOutputStream(new Socket(SERVER_HOST, SERVER_PORT).getOutputStream());
+//            ObjectOutputStream o2 = new ObjectOutputStream(new Socket(SERVER_HOST, SERVER_PORT).getOutputStream());
+//            ObjectOutputStream o3 = new ObjectOutputStream(new Socket(SERVER_HOST, SERVER_PORT).getOutputStream());
             new Socket(SERVER_HOST, SERVER_PORT);
             new Socket(SERVER_HOST, SERVER_PORT);
             new Socket(SERVER_HOST, SERVER_PORT);
@@ -64,7 +69,7 @@ public class SessionManagerTest {
 
     private void waitASec() {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

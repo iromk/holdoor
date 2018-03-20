@@ -27,7 +27,7 @@ public class ReceiveSampleFileTest {
         server.start();
     }
 
-    @Test
+    @Test @Ignore
     public void receiveSampleFile() {
         // preps
         final String sentFileName = "./data/sample/Starter Set - Characters.pdf";

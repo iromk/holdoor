@@ -4,6 +4,7 @@ import common.FileManager;
 import common.Protocol;
 import common.Session;
 import common.core.App;
+import common.net.Listener;
 import srv.Server;
 import srv.SessionManager;
 
@@ -13,7 +14,6 @@ import java.net.Socket;
 public class ClientSession extends Session {
 
     private SessionManager sessionManager;
-    private Socket socket;
 
 //    private DataInputStream in;
     private DataOutputStream out;
@@ -31,7 +31,7 @@ public class ClientSession extends Session {
             close();
         }
 
-        run();
+        start();
 
     }
 
@@ -43,10 +43,10 @@ public class ClientSession extends Session {
             boolean loop = true;
             boolean interrupted = false;
             sleep(1000);
-            InputStream socketInputStream = socket.getInputStream();
+            InputStream socketInputStream = getInputStream();
             DataInputStream dis = new DataInputStream(socketInputStream);
+//            ObjectInputStream ois = new ObjectInputStream(socketInputStream);
 
-            ObjectInputStream ois = new ObjectInputStream(socketInputStream);
 /*            while (loop) {
                 interrupted = interrupted();
                 if(interrupted)
@@ -66,6 +66,8 @@ public class ClientSession extends Session {
             }
 */
             App.log().info("Waiting for incoming file");
+//            new Listener(this).start();
+
             loop = true;
             size = 0L;
             while (loop) {
@@ -73,10 +75,10 @@ public class ClientSession extends Session {
                 if(interrupted)
                     throw new InterruptedException();
                 if(socketInputStream.available() > 0) {
-                    Object o = ois.readObject();
-                    if(o instanceof Long) size = (Long) o;
+//                    Object o = ois.readObject();
+//                    if(o instanceof Long) size = (Long) o;
 //                    size = ino.readLong(); // read/writeLong() doesn't want to work as I expect.
-                    loop = false;
+//                    loop = false;
                 } else sleep(1);
             }
 
@@ -84,11 +86,11 @@ public class ClientSession extends Session {
             FileManager.receiveBinary(size, socketInputStream);
 
         } catch (InterruptedException e) {
-            App.log().warning("Session interrupted.\n" + App.getStackTrace(e));
+            App.log().fine("Session interrupted.\n" + App.getStackTrace(e));
         } catch (IOException e) {
-            App.log().warning("Incoming session couldn't be connected (" + e.toString() + ")");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            App.log().warning("Incoming session couldn't be connected (" +  App.getStackTrace(e) + ")");
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
         }
         App.verbose("The ClientSession thread finished.");
     }
@@ -96,6 +98,7 @@ public class ClientSession extends Session {
     @Override
     public void close() {
         try {
+            interrupt();
             socket.close();
             sessionManager.removeClientSession(this);
         } catch (IOException e) {
