@@ -2,6 +2,8 @@ package srv;
 
 import common.*;
 import common.core.App;
+import org.json.simple.JsonArray;
+import srv.data.Name;
 import srv.net.ClientSession;
 
 import java.io.IOException;
@@ -39,6 +41,10 @@ public class SessionManager extends Thread {
 //            DataOutputStream out = new DataOutputStream(clientSocket.getOutputStream());
 
             boolean interrupted = false;
+
+            JsonArray ja = new JsonArray();
+            ja.add(new Name("aaa","bbbb"));
+            ja.add(serverSocket);
 
             while(active) {
                 interrupted = interrupted();
@@ -94,6 +100,7 @@ public class SessionManager extends Thread {
         finally {
             stopGently();
         }
+        App.verbose("manager stopped");
     }
 
     public int size() {
@@ -123,6 +130,7 @@ public class SessionManager extends Thread {
             int n = activeClientSessions.size();
             while(n-->0) activeClientSessions.get(n).close();
         }
+        App.verbose("close client session");
     }
 
 }

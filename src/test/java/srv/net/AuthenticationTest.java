@@ -8,7 +8,6 @@ import srv.TestsSetup;
 import java.io.*;
 import java.net.Socket;
 
-@Ignore
 public class AuthenticationTest {
 
     final int SERVER_PORT = 4242;
@@ -36,11 +35,12 @@ public class AuthenticationTest {
     @Test
     public void simpleAuthenticationTest() {
         try {
-            DataOutputStream os = new DataOutputStream(socket.getOutputStream());
+//            DataOutputStream os = new DataOutputStream(socket.getOutputStream());
+            ObjectOutputStream os = new ObjectOutputStream(socket.getOutputStream());
             DataInputStream is = new DataInputStream(socket.getInputStream());
 
             final String helloRequest = Protocol.HELLO_TOKEN + " 1 test";
-            os.writeUTF(helloRequest);
+            os.writeObject(helloRequest);
             final String response = is.readUTF();
             Assert.assertTrue(response.startsWith(Protocol.WELCOME_TOKEN));
 

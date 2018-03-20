@@ -1,18 +1,15 @@
 package srv;
 
-import common.App;
+import common.core.App;
+import common.core.Mode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
-//import srv.data.auto.User;
-//import srv.data.User;
-import srv.data.Name;
-import srv.data.Project;
 import srv.data.auto.Auto;
 
+import java.util.logging.Level;
 
 
 public class Main {
@@ -20,8 +17,15 @@ public class Main {
     private static Session session = null;
 
     public static void main(String[] args) {
-        App.set().environment(App.Environment.DEV).init();
-        if(App.log() == null) System.out.println("log is nul");
+
+        App.config("Server")
+                .set(Mode.DEV)
+                .set(Level.ALL, Level.WARNING, Level.FINEST)
+//                .verbose()
+//                .dev()
+                .init();
+
+        new Server().start();
     }
 
     public static void main2(String[] args) {

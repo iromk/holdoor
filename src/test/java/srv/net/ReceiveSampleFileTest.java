@@ -8,7 +8,7 @@ import srv.TestsSetup;
 
 import java.io.*;
 
-@Ignore
+//@Ignore
 public class ReceiveSampleFileTest {
 
     final int SERVER_PORT = Protocol.DEFAULT_PORT;
@@ -33,14 +33,19 @@ public class ReceiveSampleFileTest {
         final String sentFileName = "./data/sample/Starter Set - Characters.pdf";
         final String rcvdFileName = "./data/tmp/file.pdf";
         File rcvdFile = new File(rcvdFileName);
-        if(rcvdFile.exists()) rcvdFile.delete();
+//        if(rcvdFile.exists()) rcvdFile.delete();
 
         // simulate client behavior
         UserSession userSession = UserSession.get();
-        userSession.establish();
+//        userSession.establish();
+        try {
+            userSession.connect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         userSession.send(sentFileName);
-
         // compare sent vs received
+        Assert.assertTrue(rcvdFile.exists());
         try {
             // wait for buffers to flush
             Thread.sleep(2_000);
@@ -56,7 +61,7 @@ public class ReceiveSampleFileTest {
                 Assert.assertTrue(rcvdReadBytes == sentReadBytes);
                 Assert.assertArrayEquals(sentBuffer, rcvdBuffer);
             }
-
+            Thread.sleep(2222);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -68,7 +73,7 @@ public class ReceiveSampleFileTest {
 
     @After
     public void stopServer() {
-        server.stop();
+//        server.stop();
     }
 
 }
