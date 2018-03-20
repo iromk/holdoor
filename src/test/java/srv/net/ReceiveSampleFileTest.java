@@ -33,7 +33,7 @@ public class ReceiveSampleFileTest {
         final String sentFileName = "./data/sample/Starter Set - Characters.pdf";
         final String rcvdFileName = "./data/tmp/file.pdf";
         File rcvdFile = new File(rcvdFileName);
-//        if(rcvdFile.exists()) rcvdFile.delete();
+        if(rcvdFile.exists()) rcvdFile.delete();
 
         // simulate client behavior
         UserSession userSession = UserSession.get();
@@ -51,7 +51,7 @@ public class ReceiveSampleFileTest {
             Thread.sleep(2_000);
             BufferedInputStream sent = new BufferedInputStream(new FileInputStream(sentFileName));
             BufferedInputStream rcvd = new BufferedInputStream(new FileInputStream(rcvdFileName));
-            // actually, file sizes. should be equal
+            // Actually, file sizes. Should be equal.
             Assert.assertTrue(sent.available() == rcvd.available());
             byte[] sentBuffer, rcvdBuffer;
             sentBuffer = new byte[10_240];
@@ -61,7 +61,6 @@ public class ReceiveSampleFileTest {
                 Assert.assertTrue(rcvdReadBytes == sentReadBytes);
                 Assert.assertArrayEquals(sentBuffer, rcvdBuffer);
             }
-            Thread.sleep(2222);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

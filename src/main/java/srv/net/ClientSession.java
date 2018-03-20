@@ -43,16 +43,16 @@ public class ClientSession extends Session {
             boolean loop = true;
             boolean interrupted = false;
             sleep(1000);
-            InputStream in = socket.getInputStream();
-            DataInputStream dis = new DataInputStream(in);
+            InputStream socketInputStream = socket.getInputStream();
+            DataInputStream dis = new DataInputStream(socketInputStream);
 
-            ObjectInputStream ois = new ObjectInputStream(in);
+            ObjectInputStream ois = new ObjectInputStream(socketInputStream);
 /*            while (loop) {
                 interrupted = interrupted();
                 if(interrupted)
                     throw new InterruptedException();
 //                int ava = ino.available();
-                if(in.available() > 0) {
+                if(socketInputStream.available() > 0) {
                     Object obj = ino.readObject();//readUTF();
                     String text = "";
                     if(obj instanceof String)
@@ -72,7 +72,7 @@ public class ClientSession extends Session {
                 interrupted = interrupted();
                 if(interrupted)
                     throw new InterruptedException();
-                if(in.available() > 0) {
+                if(socketInputStream.available() > 0) {
                     Object o = ois.readObject();
                     if(o instanceof Long) size = (Long) o;
 //                    size = ino.readLong(); // read/writeLong() doesn't want to work as I expect.
@@ -81,10 +81,7 @@ public class ClientSession extends Session {
             }
 
             App.log().info("Incoming file size " + size);
-            FileManager.receiveBinary(size, in);
-            App.log().info("afta recived binary");
-            sleep(1000);
-
+            FileManager.receiveBinary(size, socketInputStream);
 
         } catch (InterruptedException e) {
             App.log().warning("Session interrupted.\n" + App.getStackTrace(e));
@@ -99,8 +96,6 @@ public class ClientSession extends Session {
     @Override
     public void close() {
         try {
-//            if(in != null) in.close();
-            if(out != null) out.close();
             socket.close();
             sessionManager.removeClientSession(this);
         } catch (IOException e) {

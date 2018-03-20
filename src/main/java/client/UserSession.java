@@ -69,27 +69,29 @@ public class UserSession extends Session {
             File file = new File(filename);
 
 //            new Listener(this).run();
-            BufferedInputStream localInput = new BufferedInputStream(new FileInputStream(file));
-            OutputStream os = socket.getOutputStream();
-            DataOutputStream dos = new DataOutputStream(os);
-            ObjectOutputStream objectOutput = new ObjectOutputStream(os);
-                objectOutput.writeObject(file.length());
-                final int blockSize = 10240;
-                byte[] buffer = new byte[blockSize];
-                long totalSent = 0;
-//            objectOutput = null;
+            OutputStream socketOutputStream = socket.getOutputStream();
 
-            BufferedOutputStream remoteOutput = new BufferedOutputStream(os);//socket.getOutputStream());
-                for (int length = localInput.read(buffer); length >= 0; length = localInput.read(buffer)) {
-                    remoteOutput.write(buffer, 0, length);
-                    totalSent += length;
-                }
-                App.verbose("Sent totally " + totalSent);
-//            try {
-//                sleep(2222);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
+            {
+                ObjectOutputStream objectOutput = new ObjectOutputStream(socketOutputStream);
+                objectOutput.writeObject(file.length());
+            } // we don't need objectOutput anymore
+
+            BufferedInputStream localInput = new BufferedInputStream(new FileInputStream(file));
+            DataOutputStream dos = new DataOutputStream(socketOutputStream);
+
+            final int blockSize = 22222;
+            byte[] buffer = new byte[blockSize];
+            long totalSent = 0;
+
+            BufferedOutputStream remoteOutput = new BufferedOutputStream(dos);
+            for (int length = localInput.read(buffer); length >= 0; length = localInput.read(buffer)) {
+                remoteOutput.write(buffer, 0, length);
+                totalSent += length;
+            }
+            App.verbose("Sent totally " + totalSent);
+
+            remoteOutput.flush();
+//            remoteOutput.close(); // DON'T! This will close the socket!
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
