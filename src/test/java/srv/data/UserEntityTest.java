@@ -5,7 +5,10 @@ import srv.JPAFactory;
 
 import javax.persistence.EntityManager;
 
-public class UserTest {
+/**
+ * Test hibernate entities work as expected.
+ */
+public class UserEntityTest {
 
 
     @BeforeClass
@@ -20,7 +23,7 @@ public class UserTest {
     }
 
     @Test
-    public void AddUserTest() {
+    public void addingNewUserEntityTest() {
         final EntityManager entityManager = JPAFactory.getEntityManager();
 
         final String userFirstName = "Sarah";
@@ -51,7 +54,7 @@ public class UserTest {
     }
 
     @Test//(expected = NullPointerException.class)
-    public void WrongUidGiven() {
+    public void findUserByWrongUidFails() {
         User hey = User.findByUid("wrongestuidever");
         Assert.assertNull(hey);
     }

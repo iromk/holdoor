@@ -5,7 +5,7 @@ import srv.JPAFactory;
 
 import javax.persistence.*;
 
-public class UserProjectTest {
+public class UserProjectEntitiesTest {
 
     @BeforeClass
     public static void setUpClass() {
@@ -20,7 +20,7 @@ public class UserProjectTest {
     }
 
     @Test
-    public void AddUserAnd2ProjectsTest() {
+    public void addUserAnd2RelatedProjectsEntitiesTest() {
 
         final EntityManager entityManager = JPAFactory.getEntityManager();
 

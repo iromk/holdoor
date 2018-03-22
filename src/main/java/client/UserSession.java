@@ -3,7 +3,7 @@ package client;
 import common.Protocol;
 import common.Session;
 import common.core.App;
-import common.net.Listener;
+import srv.data.Name;
 
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -28,6 +28,10 @@ public class UserSession extends Session {
     }
 
     private UserSession() { socket = new Socket(); }
+
+    public void registerUser(Name name, String login, String password) {
+
+    }
 
     public void authenticate(String username, String password) throws IOException {
 

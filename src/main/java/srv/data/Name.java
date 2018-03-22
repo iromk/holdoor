@@ -34,8 +34,8 @@ public class Name {
 
     @Override
     public boolean equals(Object o) {
-        Name otherName = (Name) o;
-        return this.first.equals(otherName.getFirst()) && this.last.equals(otherName.getLast());
+        Name that = (Name) o;
+        return this.first.equals(that.getFirst()) && this.last.equals(that.getLast());
     }
 
 }
