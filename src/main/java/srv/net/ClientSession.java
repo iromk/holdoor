@@ -4,9 +4,12 @@ import com.github.cliftonlabs.json_simple.JsonObject;
 import common.Session;
 import common.core.Action;
 import common.core.App;
+import srv.JPAFactory;
 import srv.SessionManager;
 import srv.data.Name;
+import srv.data.User;
 
+import javax.persistence.EntityManager;
 import java.io.*;
 import java.net.Socket;
 
@@ -58,6 +61,7 @@ public class ClientSession extends Session {
                             assert (action != null);
                             int actionId = (int) action;
                             if(actionId == Action.REGISTER_USER) {
+                                registerUser(jsonObject);
                                 Name name = (Name)jsonObject.get("name");
                                 System.out.println(name.getFirst() + " " + name.getLast());
                             }
@@ -73,6 +77,19 @@ public class ClientSession extends Session {
             e.printStackTrace();
         }
         App.verbose("The ClientSession thread finished.");
+    }
+
+    private void registerUser(JsonObject request) {
+        Name name = (Name) request.get("name");
+        String login = (String) request.get("login");
+        String password = (String) request.get("password");
+        User newUser = new User(name.getFirst(), name.getLast(), login);
+        // TODO set password
+        // TODO validate given data
+        EntityManager entityManager = JPAFactory.getEntityManager();
+        entityManager.getTransaction().begin();
+        entityManager.persist(newUser);
+        entityManager.getTransaction().commit();
     }
 
     @Override
