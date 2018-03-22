@@ -61,12 +61,12 @@ public class Server {
             if (sessionManager == null) {
                 App.log().warning("There is no active sessionManager on server.stop().");
             } else {
-                App.verbose("Stopping session. Shutdown clients gently...");
+                App.verbose().finest("Stopping session. Shutdown clients gently...");
                 // wait for session to stop correctly
-                App.verbose("sessionManager is interrupting.....");
+                App.verbose().finest("sessionManager is interrupting.....");
                 sessionManager.stopGently();
                 sessionManager.join();
-                App.verbose("sessionManager interrupted");
+                App.verbose().finest("sessionManager interrupted");
                 // then do the rest stuffs
             }
             serverSocket.close();

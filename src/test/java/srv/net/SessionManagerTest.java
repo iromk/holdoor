@@ -27,7 +27,7 @@ public class SessionManagerTest {
 
     @Before
     public void runServer() {
-        server = new Server();
+        server = new Server(SERVER_PORT);
         server.start();
     }
 
@@ -43,12 +43,12 @@ public class SessionManagerTest {
 
     private void doOpenThreeSessions() {
         try {
-//            ObjectOutputStream o1 = new ObjectOutputStream(new Socket(SERVER_HOST, SERVER_PORT).getOutputStream());
-//            ObjectOutputStream o2 = new ObjectOutputStream(new Socket(SERVER_HOST, SERVER_PORT).getOutputStream());
-//            ObjectOutputStream o3 = new ObjectOutputStream(new Socket(SERVER_HOST, SERVER_PORT).getOutputStream());
-            new Socket(SERVER_HOST, SERVER_PORT);
-            new Socket(SERVER_HOST, SERVER_PORT);
-            new Socket(SERVER_HOST, SERVER_PORT);
+            ObjectOutputStream o1 = new ObjectOutputStream(new Socket(SERVER_HOST, SERVER_PORT).getOutputStream());
+            ObjectOutputStream o2 = new ObjectOutputStream(new Socket(SERVER_HOST, SERVER_PORT).getOutputStream());
+            ObjectOutputStream o3 = new ObjectOutputStream(new Socket(SERVER_HOST, SERVER_PORT).getOutputStream());
+//            new Socket(SERVER_HOST, SERVER_PORT);
+//            new Socket(SERVER_HOST, SERVER_PORT);
+//            new Socket(SERVER_HOST, SERVER_PORT);
         } catch (IOException e) {
             App.log().severe("Test preparation failed.\n");
             App.log().severe(App.getStackTrace(e));

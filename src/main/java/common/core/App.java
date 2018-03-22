@@ -149,11 +149,6 @@ public class App {
 
     static public LogContext log(LogContext context) { return context; }
 
-    static public void verbose(String text) {
-        if(instance.verboseEnabled) {
-            System.out.print("> ");
-            System.out.println(text);
-        }
-    }
+    static public Logger verbose() { return instance.logger; }
 
 }

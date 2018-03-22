@@ -67,7 +67,7 @@ public class ClientSession extends Session {
                             }
                         }
                     }
-                }
+                } else sleep(1);
             }
         } catch (InterruptedException e) {
             App.log().fine("Session interrupted.\n" + App.getStackTrace(e));
@@ -76,7 +76,7 @@ public class ClientSession extends Session {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        App.verbose("The ClientSession thread finished.");
+        App.verbose().finest("The ClientSession thread finished.");
     }
 
     private void registerUser(JsonObject request) {

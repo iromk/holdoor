@@ -51,7 +51,7 @@ public class SessionManager extends Thread {
                     App.log().info("Connected new session " + acceptedConnection.toString());
                     activeClientSessions.add(new ClientSession(acceptedConnection, this));
                 } else {
-                    App.verbose("Fake connection requested. Deactivating server.");
+                    App.verbose().finest("Fake connection requested. Deactivating server.");
                 }
             }
       /*
@@ -95,7 +95,7 @@ public class SessionManager extends Thread {
         finally {
             stopGently();
         }
-        App.verbose("SessionManager stopped");
+        App.verbose().finest("SessionManager stopped");
     }
 
     public int size() {
@@ -106,7 +106,7 @@ public class SessionManager extends Thread {
         if(!active) return;
         try {
             Socket fakeSocket = new Socket();
-            App.verbose("Establishing fake connection to release serverSocket.accept()");
+            App.verbose().finest("Establishing fake connection to release serverSocket.accept()");
             active = false;
             fakeSocket.connect(serverSocket.getLocalSocketAddress());
             fakeSocket.close();
@@ -125,7 +125,7 @@ public class SessionManager extends Thread {
             int n = activeClientSessions.size();
             while(n-->0) activeClientSessions.get(n).close();
         }
-        App.verbose("Closed client sessions");
+        App.verbose().finest("Closed client sessions");
     }
 
 }

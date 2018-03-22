@@ -104,7 +104,7 @@ public class UserSession extends Session {
                 remoteOutput.write(buffer, 0, length);
                 totalSent += length;
             }
-            App.verbose("Sent totally " + totalSent);
+            App.verbose().finest("Sent totally " + totalSent);
 
             remoteOutput.flush();
 //            remoteOutput.close(); // DON'T! This will close the socket!

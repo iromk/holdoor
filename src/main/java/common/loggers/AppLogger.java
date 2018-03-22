@@ -26,17 +26,20 @@ public class AppLogger {
 
         try { // to create and attach console and file handlers
 
-            /*
+
+            SimplerFormatter simplerFormatter = new SimplerFormatter();
+
             // Setup here console handler if no default for some reason
             consoleHandler = new ConsoleHandler();
-            logger.addHandler(consoleHandler);
             consoleHandler.setLevel(Level.ALL);
-            */
+            consoleHandler.setFormatter(simplerFormatter);
+            logger.setUseParentHandlers(false);
+            logger.addHandler(consoleHandler);
 
             fileHandler  = new FileHandler(logFile, true);
-            fileHandler.setFormatter(new SimpleFormatter()); // plain text is enough for now
+            fileHandler.setFormatter(simplerFormatter); // plain text is enough for now
+            fileHandler.setLevel(Level.FINE);//logLevel);
             logger.addHandler(fileHandler);
-            fileHandler.setLevel(Level.ALL);//logLevel);
 
 //            globalLogger.addHandler(fileHandler);
 
