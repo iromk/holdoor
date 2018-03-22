@@ -1,9 +1,10 @@
 package srv.data;
 
 import javax.persistence.Embeddable;
+import java.io.Serializable;
 
 @Embeddable
-public class Name {
+public class Name implements Serializable {
 
     private String first;
 

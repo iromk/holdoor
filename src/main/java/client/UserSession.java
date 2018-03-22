@@ -1,5 +1,7 @@
 package client;
 
+import com.github.cliftonlabs.json_simple.JsonArray;
+import com.github.cliftonlabs.json_simple.JsonObject;
 import common.Protocol;
 import common.Session;
 import common.core.App;
@@ -30,7 +32,21 @@ public class UserSession extends Session {
     private UserSession() { socket = new Socket(); }
 
     public void registerUser(Name name, String login, String password) {
-
+        try {
+            connect();
+            JsonObject jsonObject = new JsonObject();
+            JsonArray a = new JsonArray();
+            jsonObject.put("name", name);
+            jsonObject.put("login", login);
+            jsonObject.put("password", password);
+            a.add(name);
+            a.add(login);
+            a.add(password);
+            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+            oos.writeObject(jsonObject);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void authenticate(String username, String password) throws IOException {
