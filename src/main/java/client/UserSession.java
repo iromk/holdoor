@@ -4,6 +4,7 @@ import com.github.cliftonlabs.json_simple.JsonArray;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import common.Protocol;
 import common.Session;
+import common.core.Action;
 import common.core.App;
 import srv.data.Name;
 
@@ -35,13 +36,10 @@ public class UserSession extends Session {
         try {
             connect();
             JsonObject jsonObject = new JsonObject();
-            JsonArray a = new JsonArray();
+            jsonObject.put("action", Action.REGISTER_USER);
             jsonObject.put("name", name);
             jsonObject.put("login", login);
             jsonObject.put("password", password);
-            a.add(name);
-            a.add(login);
-            a.add(password);
             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
             oos.writeObject(jsonObject);
         } catch (IOException e) {

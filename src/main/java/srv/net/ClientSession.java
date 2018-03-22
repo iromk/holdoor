@@ -2,6 +2,7 @@ package srv.net;
 
 import com.github.cliftonlabs.json_simple.JsonObject;
 import common.Session;
+import common.core.Action;
 import common.core.App;
 import srv.SessionManager;
 import srv.data.Name;
@@ -48,13 +49,20 @@ public class ClientSession extends Session {
                     throw new InterruptedException();
                 if(socketInputStream.available() > 0) {
                     Object receivedObject = ois.readObject();
+                    assert (receivedObject != null);
                     JsonObject jsonObject = null;
                     if(receivedObject instanceof JsonObject) {
                         jsonObject = (JsonObject) receivedObject;
+                        if(jsonObject.containsKey("action")) {
+                            Object action = jsonObject.get("action");
+                            assert (action != null);
+                            int actionId = (int) action;
+                            if(actionId == Action.REGISTER_USER) {
+                                Name name = (Name)jsonObject.get("name");
+                                System.out.println(name.getFirst() + " " + name.getLast());
+                            }
+                        }
                     }
-                    assert (jsonObject != null);
-                    Name name = (Name)jsonObject.get("name");
-                    System.out.println(name.getFirst() + " " + name.getLast());
                 }
             }
         } catch (InterruptedException e) {
